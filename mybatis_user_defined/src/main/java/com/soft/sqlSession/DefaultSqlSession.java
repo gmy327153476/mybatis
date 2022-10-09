@@ -2,6 +2,7 @@ package com.soft.sqlSession;
 
 import com.soft.pojo.Configuration;
 
+import java.lang.reflect.*;
 import java.util.List;
 
 public class DefaultSqlSession implements SqlSession {
@@ -30,6 +31,23 @@ public class DefaultSqlSession implements SqlSession {
 
     @Override
     public <T> T getMapper(Class<?> mapperClass) {
-        return null;
+        Object proxyInstance = Proxy.newProxyInstance(mapperClass.getClassLoader(), new Class[]{mapperClass}, new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                String methodName = method.getName();
+                String className = method.getDeclaringClass().getName();
+                String statementId = className + "." + methodName;
+                Type genericReturnType = method.getGenericReturnType();
+                //判断是否实现泛型类型参数化
+                if (genericReturnType instanceof ParameterizedType) {
+                    List<Object> list = selectList(statementId, args);
+                    return list;
+                }
+
+                return selectOne(statementId, args);
+            }
+        });
+
+        return (T) proxyInstance;
     }
 }

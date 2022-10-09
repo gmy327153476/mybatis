@@ -7,5 +7,5 @@ import java.util.List;
 public interface IUserDao {
     List<User> findAll();
 
-    User findByCondition();
+    User findByCondition(User user);
 }
