@@ -7,7 +7,6 @@ import com.soft.sqlSession.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
 import java.io.InputStream;
-import java.util.List;
 
 public class MybatisTest01 {
 
@@ -22,12 +21,13 @@ public class MybatisTest01 {
         //User o = sqlSession.selectOne("user.selectOne", user);
         //List<Object> objects = sqlSession.selectList("user.selectList", null);
         IUserDao userDao = sqlSession.getMapper(IUserDao.class);
-        List<User> objects = userDao.findAll();
+        /*List<User> objects = userDao.findAll();
         for (Object object : objects) {
             System.out.println(object);
-        }
+        }*/
 
         User byCondition = userDao.findByCondition(user);
         System.out.println(byCondition);
+
     }
 }
